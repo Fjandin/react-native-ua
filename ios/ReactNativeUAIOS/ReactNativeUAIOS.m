@@ -37,7 +37,7 @@ static PushHandler *pushHandler = nil;
     } acceptingArguments:^BOOL(UAActionArguments *args) {
         return YES;
     }];
-    
+
     // Update the the deep link action in the registry with urlAction
     [[UAirship shared].actionRegistry updateAction:urlAction forEntryWithName:kUAOpenExternalURLActionDefaultRegistryName];
 
@@ -46,7 +46,7 @@ static PushHandler *pushHandler = nil;
 
 - (void)verifyLaunchOptions:(NSDictionary *) launchOptions {
     NSDictionary *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-    
+
     if (notification == nil) [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"push_notification_opened_from_background"];
 }
 
@@ -105,16 +105,20 @@ RCT_EXPORT_METHOD(setNamedUserId:(NSString *)nameUserId) {
     [UAirship push].namedUser.identifier = nameUserId;
 }
 
+RCT_EXPORT_METHOD(removeNamedUserId) {
+    [UAirship push].namedUser.identifier = nil;
+}
+
 RCT_EXPORT_METHOD(handleBackgroundNotification) {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
+
     if ([defaults objectForKey:@"push_notification_opened_from_background"]) {
-        
+
         NSDictionary *notification = [defaults objectForKey:@"push_notification_opened_from_background"];
-        
+
         [[ReactNativeUAIOS getInstance] dispatchEvent:@"receivedNotification" body:@{@"event": @"launchedFromNotification",
                                                                                      @"data": notification}];
-        
+
         [defaults removeObjectForKey:@"push_notification_opened_from_background"];
     }
 }
@@ -123,14 +127,14 @@ RCT_EXPORT_METHOD(enableGeolocation) {
     if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
         static CLLocationManager* lm = nil;
         static dispatch_once_t once;
-        
+
         dispatch_once(&once, ^ {
             // Code to run once
             lm = [[CLLocationManager alloc] init];
         });
-        
+
         [lm requestAlwaysAuthorization];
-        
+
         [UAirship shared].locationService.requestAlwaysAuthorization = YES;
         [UALocationService locationServicesEnabled];
         [UALocationService locationServiceAuthorized];
@@ -143,18 +147,18 @@ RCT_EXPORT_METHOD(enableGeolocation) {
 RCT_EXPORT_METHOD(enableActionUrl) {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"enable_action_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
     BOOL isActionUrl = [[NSUserDefaults standardUserDefaults] boolForKey:@"enable_action_url"] ? YES : NO;
-    
+
     NSLog(@"Habilitou o comportamento DEFAULT da action URL -> %@", isActionUrl ? @"YES": @"NO");
 }
 
 RCT_EXPORT_METHOD(disableActionUrl) {
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"enable_action_url"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
     BOOL isActionUrl = [[NSUserDefaults standardUserDefaults] boolForKey:@"enable_action_url"] ? YES : NO;
-    
+
     NSLog(@"Desabilitou o comportamento DEFAULT da action URL -> %@", isActionUrl ? @"YES": @"NO");
 }
 
@@ -166,14 +170,14 @@ RCT_EXPORT_METHOD(disableActionUrl) {
 - (BOOL)actionHandleNotification:(NSDictionary *)notification completionHandler:(void (^)())completionHandler {
     BOOL isActionUrl = [[NSUserDefaults standardUserDefaults] boolForKey:@"enable_action_url"] ? YES : NO;
     BOOL isUrl = [notification objectForKey:@"^u"] ? YES : NO;
-    
+
     if (isActionUrl == YES && isUrl == YES) {
         UAActionArguments * arguments = [UAActionArguments argumentsWithValue:[notification objectForKey:@"^u"] withSituation:UASituationManualInvocation];
-        
+
         UAOpenExternalURLAction *urlAction = [[UAOpenExternalURLAction alloc] init];
-        
+
         [urlAction performWithArguments:arguments completionHandler:completionHandler];
-        
+
         return YES;
     } else {
         return NO;
@@ -184,7 +188,7 @@ RCT_EXPORT_METHOD(disableActionUrl) {
     if (![self actionHandleNotification:notification completionHandler:completionHandler]) {
         [[ReactNativeUAIOS getInstance] dispatchEvent:@"receivedNotification" body:@{@"event": @"receivedForegroundNotification",
                                                                                      @"data": notification}];
-        
+
         completionHandler(UIBackgroundFetchResultNoData);
     }
 }
@@ -195,7 +199,7 @@ RCT_EXPORT_METHOD(disableActionUrl) {
                                                                                  @"data": notification}];
 
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
+
         [defaults setObject:notification forKey:@"push_notification_opened_from_background"];
         [defaults synchronize];
 
