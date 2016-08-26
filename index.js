@@ -66,43 +66,47 @@ switch (Platform.OS) {
 
 class ReactNativeUA {
 
-    static enable_notification () {
+    static enableNotification () {
         bridge.enableNotification();
     }
 
-    static disable_notification () {
+    static disableNotification () {
         bridge.disableNotification();
     }
 
-    static enable_geolocation () {
+    static enableGeolocation () {
         bridge.enableGeolocation();
     }
 
-    static enable_action_url () {
+    static enableActionUrl () {
         bridge.enableActionUrl();
     }
 
-    static disable_action_url () {
+    static disableActionUrl () {
         bridge.disableActionUrl();
     }
 
-    static handle_background_notification () {
+    static handleBackgroundNotification () {
         bridge.handleBackgroundNotification();
     }
 
-    static add_tag (tag) {
+    static addTag (tag) {
         bridge.addTag(tag);
     }
 
-    static remove_tag (tag) {
+    static removeTag (tag) {
         bridge.removeTag(tag);
     }
 
-    static set_named_user_id (nameUserId) {
+    static setNamedUserId (nameUserId) {
         bridge.setNamedUserId(nameUserId);
     }
 
-    static on_notification (callback) {
+    static removeNamedUserId () {
+        bridge.setNamedUserId();
+    }
+
+    static onNotification (callback) {
         notification_listeners.push(callback);
     }
 
