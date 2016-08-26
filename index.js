@@ -103,7 +103,7 @@ class ReactNativeUA {
     }
 
     static removeNamedUserId () {
-        bridge.setNamedUserId();
+        bridge.removeNamedUserId();
     }
 
     static onNotification (callback) {
