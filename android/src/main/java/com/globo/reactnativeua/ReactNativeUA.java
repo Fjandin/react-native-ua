@@ -51,6 +51,11 @@ public class ReactNativeUA extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void removeNamedUserId() {
+        UAirship.shared().getPushManager().getNamedUser().setId(null);
+    }
+
+    @ReactMethod
     public void handleBackgroundNotification() {
         Activity activity = getCurrentActivity();
 
