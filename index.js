@@ -70,6 +70,10 @@ class ReactNativeUA {
         bridge.resetBadge();
     }
 
+    static setBadgeNumber (badgeNumber) {
+        bridge.setBadgeNumber(badgeNumber);
+    }
+
     static enableNotification () {
         bridge.enableNotification();
     }

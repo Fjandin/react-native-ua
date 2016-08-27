@@ -158,6 +158,10 @@ RCT_EXPORT_METHOD(resetBadge) {
     [[UAirship push] resetBadge];
 }
 
+RCT_EXPORT_METHOD(setBadge:(NSInteger)badgeNumber) {
+    [[UAirship push] setBadgeNumber:badgeNumber];
+}
+
 @end
 
 

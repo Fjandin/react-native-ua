@@ -92,4 +92,8 @@ public class ReactNativeUA extends ReactContextBaseJavaModule {
     public void resetBadge() {
         UAirship.shared().getPushManager().resetBadge();
     }
+
+    public void setBadgeNumber(Integer badgeNumber) {
+        UAirship.shared().getPushManager().setBadgeNumber(badgeNumber);
+    }
 }
