@@ -154,6 +154,10 @@ RCT_EXPORT_METHOD(disableActionUrl) {
     NSLog(@"Desabilitou o comportamento DEFAULT da action URL -> %@", isActionUrl ? @"YES": @"NO");
 }
 
+RCT_EXPORT_METHOD(resetBadge) {
+    [[UAirship push] resetBadge];
+}
+
 @end
 
 

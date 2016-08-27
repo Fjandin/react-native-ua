@@ -66,6 +66,10 @@ switch (Platform.OS) {
 
 class ReactNativeUA {
 
+    static resetBadge () {
+        bridge.resetBadge();
+    }
+
     static enableNotification () {
         bridge.enableNotification();
     }

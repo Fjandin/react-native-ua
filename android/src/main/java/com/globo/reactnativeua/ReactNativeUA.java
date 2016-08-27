@@ -87,4 +87,9 @@ public class ReactNativeUA extends ReactContextBaseJavaModule {
     @ReactMethod
     public void enableGeolocation() {
     }
+
+    @ReactMethod
+    public void resetBadge() {
+        UAirship.shared().getPushManager().resetBadge();
+    }
 }
