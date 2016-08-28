@@ -62,14 +62,11 @@ static PushHandler *pushHandler = nil;
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(enableNotification) {
-
-    if ([[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
-        return;
-    }
-
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     [UAirship push].userPushNotificationsEnabled = YES;
+
+    return;
 
     if ([defaults objectForKey:@"first_time_notification_enable"]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
@@ -80,10 +77,6 @@ RCT_EXPORT_METHOD(enableNotification) {
 }
 
 RCT_EXPORT_METHOD(disableNotification) {
-    if (![[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
-        return;
-    }
-
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     } else {
