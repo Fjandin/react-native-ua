@@ -31,7 +31,6 @@ static PushHandler *pushHandler = nil;
 
     pushHandler = [PushHandler new];
     [UAirship push].pushNotificationDelegate = pushHandler;
-
         UAAction *urlAction = [UAAction actionWithBlock:^(UAActionArguments *args, UAActionCompletionHandler completionHandler) {
         completionHandler([UAActionResult emptyResult]);
     } acceptingArguments:^BOOL(UAActionArguments *args) {
@@ -63,19 +62,28 @@ static PushHandler *pushHandler = nil;
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(enableNotification) {
-    // NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    if ([[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
+        return;
+    }
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     [UAirship push].userPushNotificationsEnabled = YES;
 
-    /* if ([defaults objectForKey:@"first_time_notification_enable"]) {
+    if ([defaults objectForKey:@"first_time_notification_enable"]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     } else {
         [defaults setBool:YES forKey:@"first_time_notification_enable"];
         [defaults synchronize];
-    } */
+    }
 }
 
 RCT_EXPORT_METHOD(disableNotification) {
+    if (![[UIApplication sharedApplication] isRegisteredForRemoteNotifications]) {
+        return;
+    }
+
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     } else {
