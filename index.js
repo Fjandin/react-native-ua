@@ -74,6 +74,14 @@ class ReactNativeUA {
         bridge.setBadgeNumber(badgeNumber);
     }
 
+    static checkNotificationSettings () {
+        return bridge.checkNotificationSettings('yes');
+    }
+
+    static setUserDefault(key, value) {
+        bridge.setUserDefault(key, value);
+    }
+
     static enableNotification () {
         bridge.enableNotification();
     }

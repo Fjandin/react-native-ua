@@ -61,16 +61,44 @@ static PushHandler *pushHandler = nil;
 
 RCT_EXPORT_MODULE()
 
+RCT_EXPORT_METHOD(checkNotificationSettings:(NSString *)whyDoINeedThis
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    @try {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        BOOL secondConfirm = [defaults objectForKey:@"second_confirm_done"] ? YES : NO;
+        BOOL isRegistered = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+        UIUserNotificationSettings *setting = [[UIApplication sharedApplication] currentUserNotificationSettings];
+        BOOL isDisabled = setting.types == UIUserNotificationTypeNone;
+        NSDictionary *result = @{
+                                 @"isRegistered": isRegistered ? @YES : @NO,
+                                 @"isDisabled": isDisabled ? @YES : @NO,
+                                 @"secondConfirm": secondConfirm ? @YES : @NO
+                                 };
+        resolve(result);
+    }
+    @catch (NSException * e) {
+        reject(@"error", @"an error occured", e);
+    }
+}
+
+RCT_EXPORT_METHOD(setUserDefault:(NSString *)key :(BOOL)value) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:value forKey:key];
+    [defaults synchronize];
+}
+
 RCT_EXPORT_METHOD(enableNotification) {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     [UAirship push].userPushNotificationsEnabled = YES;
 
-    if ([defaults objectForKey:@"first_time_notification_enable"]) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-    } else {
-        [defaults setBool:YES forKey:@"first_time_notification_enable"];
+    BOOL *isRegistered = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+
+    if (isRegistered) {
+        [defaults setBool:YES forKey:@"second_confirm_done"];
         [defaults synchronize];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     }
 }
 
